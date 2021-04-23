@@ -8,23 +8,56 @@ function mouseDown(event) {
   console.log(Number(event.target.innerText));
   if (value == 'C') {
     output.value = '';
+    ops = [];
+    nums = [0];
+    num = '';
     return;
   }
   if (value.length <= 3 || value == '.' && !output.value.includes('.')) {
     
     if (value.length == 1) {
       // 
-      if (opsMap.has(value) && !isNaN(output.value)) {
-        nums.push(Number(value));
-        if (opsMap.get(value) <= opsMap.get(ops[ops.length - 1])) {
-
-        } else {
-          ops.push(value);
+      if (opsMap.has(value)) {
+        if (num != '') {
+          nums.push(Number(num));
         }
+        
+        num = '';
+        while (opsMap.get(value) <= opsMap.get(ops[ops.length - 1])) {
+          cal(nums, ops);
+        } 
+        ops.push(value);
+        
+      } else if(value != '=') {
+        num += value;
       }
       output.value += value;
+      if (value == '=') {
+        if (num != '') {
+          nums.push(Number(num));
+        }
+        let ans = 0;
+        while(nums.length > 2) {
+          ans = cal(nums, ops);
+        }
+        output.value = ans;
+        num = '';
+      }
+      
     } else if (value.length == 2) {
-
+      if (/\d/.test(Number(output.value[output.value.length - 1]))) {
+        nums.push(Number(num));
+        num = '';
+        while (ops[ops.length - 1] != '(') {
+          cal(nums, ops);
+        }
+        ops.pop();
+        output.value += ')';
+        
+      } else {
+        output.value += '(';
+        ops.push('(');
+      }
     } else {
 
     }
@@ -50,13 +83,14 @@ function mouseUp(event) {
 }
 
 function cal(nums, ops) {
-  if (nums.length == 0 || ops.length == 1) {
-    return;
+  let ans = 0;
+  if (nums.length == 1 || ops.length == 0) {
+    return ans; 
   }
   const a = nums.pop();
   const b = nums.pop();
   const op = ops.pop();
-  let ans = 0;
+  
   switch (op) {
     case '+':
       ans = a + b;
@@ -72,6 +106,7 @@ function cal(nums, ops) {
       break;
   }
   nums.push(ans);
+  return ans;
 
 }
 
@@ -90,5 +125,6 @@ const opsMap = new Map([
   ['×', 2],
   ['÷', 2]
 ]);
-const ops = [];
-const nums = [0];
+let ops = [];
+let nums = [0];
+let num = '';
