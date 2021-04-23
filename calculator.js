@@ -62,20 +62,11 @@ function mouseDown(event) {
 
     }
   } 
-  // else {
-  //   switch (value) {
-  //     case '(':
-  //     case ')':
-  //     case '+':
-  //     case '-':
-  //     case '×':
-  //     case '÷':
-  //   }
-  // }
+
 }
 
 function mouseUp(event) {
-  // console.log(event.target.tagName);
+
   if (event.target.tagName.toLowerCase() == 'td') {
     event.target.style.background = '#fff';
   }
